@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:clickable="true"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+       >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:id="@+id/linearLayout6">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="昵称修改"
+                android:textColor="#333"
+                android:visibility="visible"
+                android:textSize="20sp" />
+            <EditText
+                android:id="@+id/tv_nick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="#444"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_below="@+id/linearLayout6"
+          >
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="cancel"
+                android:text="取消"
+                android:textColor="#666666"
+                android:textSize="16sp"
+               />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="#70cce9"
+                android:gravity="center"
+                android:onClick="ok"
+                android:text="确认"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                android:id="@+id/btn_ok" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

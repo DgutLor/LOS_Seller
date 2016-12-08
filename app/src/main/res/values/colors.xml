@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <color name="colorPrimary">#ed844b</color>
+    <color name="colorPrimaryDark">#f49056</color>
+    <color name="colorAccent">#FF4081</color>
+
+    //################主界面########################
+    <color name="main_bottom_textcolor_normal">#fc7633</color>
+    <color name="main_bottom_textcolor_pressed">#fc7633</color>
+    //################seller fragment########################
+    <color name="btn_gray_normal">#22000000</color>
+
+    <color name="btn_gray_pressed">#99000000</color>
+
+</resources>

@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.wsns.lor.Activity.seller.SellerFragment">
+
+    <include
+        android:id="@+id/headerbar"
+        layout="@layout/fragment_seller_headerbar" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_marginTop="5dp"
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.brooks.loadmorerecyclerview.LoadMoreRecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/recyclerview_item_seller"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
