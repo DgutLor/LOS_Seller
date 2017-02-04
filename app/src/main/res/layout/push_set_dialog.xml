@@ -44,7 +44,6 @@
 
                 <EditText
                     android:id="@+id/et_tag"
-                    style="@style/push_tag"
                     android:layout_width="160dip"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
@@ -72,7 +71,6 @@
 
                 <EditText
                     android:id="@+id/et_alias"
-                    style="@style/push_alias"
                     android:layout_width="160dip"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dip"

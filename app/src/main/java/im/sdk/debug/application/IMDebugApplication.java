@@ -1,6 +1,7 @@
 package im.sdk.debug.application;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import cn.jpush.android.api.JPushInterface;
@@ -11,7 +12,7 @@ import cn.jpush.im.android.api.JMessageClient;
  *
  * @desc :
  */
-public class IMDebugApplication extends Application {
+public class IMDebugApplication extends MultiDexApplication {
 
     private static IMDebugApplication instance;
     public static IMDebugApplication getInstance() {

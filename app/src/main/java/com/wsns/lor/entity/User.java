@@ -1,43 +1,51 @@
 package com.wsns.lor.entity;
 
+import java.io.Serializable;
+import java.sql.Date;
+
+
 /**
  * Created by Administrator on 2016/10/2.
  */
 
-public class User {
-    private String hxid;//环信id
-    private String nickname;//昵称
-    private String password; // 密码
-    private String avatar;//照片名
-    private String sex;//性别
-    private String type; // 类型
+public class User implements Serializable {
+    int id;
+    String account;
+    String passwordHash;
+    String name;
+    String avatar;
+    String email;
 
-    public String toString(){
-        return "hxid="+hxid;
+    public int getId() {
+        return id;
     }
 
-    public String getNickname() {
-        return nickname;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public String getAccount() {
+        return account;
     }
 
-    public String getPassword() {
-        return password;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public String getHxid() {
-        return hxid;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
-    public void setHxid(String hxid) {
-        this.hxid = hxid;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAvatar() {
@@ -48,20 +56,13 @@ public class User {
         this.avatar = avatar;
     }
 
-    public String getSex() {
-        return sex;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
 

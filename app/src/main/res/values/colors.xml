@@ -3,7 +3,9 @@
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <color name="colorPrimary">#ed844b</color>
     <color name="colorPrimaryDark">#f49056</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#3c9aff</color>
+    <color name="colorAccentpressed">#993c9aff</color>
+    <color name="transparence">#00000000</color>
 
     //################主界面########################
     <color name="main_bottom_textcolor_normal">#fc7633</color>

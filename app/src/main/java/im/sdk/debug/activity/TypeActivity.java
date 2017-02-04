@@ -44,7 +44,7 @@ import im.sdk.debug.activity.createmessage.ShowDownloadVoiceInfoActivity;
 import im.sdk.debug.activity.createmessage.ShowMessageActivity;
 import im.sdk.debug.activity.friend.FriendContactManager;
 import im.sdk.debug.activity.friend.ShowFriendReasonActivity;
-import im.sdk.debug.activity.groupinfo.GroupInfoActivity;
+
 import im.sdk.debug.activity.imagecontent.ShowDownloadPathActivity;
 import im.sdk.debug.activity.notify.ShowGroupNotificationActivity;
 import im.sdk.debug.activity.setting.SettingMainActivity;
@@ -102,10 +102,7 @@ public class TypeActivity extends Activity implements View.OnClickListener {
                 intent.setClass(getApplicationContext(), CreateMessageActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.bt_group_info:
-                intent.setClass(getApplicationContext(), GroupInfoActivity.class);
-                startActivity(intent);
-                break;
+
             case R.id.bt_conversation:
                 intent.setClass(getApplicationContext(), ConversationActivity.class);
                 startActivity(intent);

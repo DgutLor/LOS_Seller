@@ -1,6 +1,7 @@
 package com.wsns.lor.Activity.more;
 
 
+import com.wsns.lor.Activity.LoginActivity;
 import com.wsns.lor.App.OnlineUserInfo;
 import com.wsns.lor.R;
 import com.wsns.lor.utils.SetAliasAndTagUtil;
@@ -28,7 +29,6 @@ import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
-import im.sdk.debug.RegisterAndLoginActivity;
 import im.sdk.debug.activity.setting.UpdateUserAvatar;
 
 /**
@@ -101,7 +101,7 @@ public class MyUserInfoActivity extends Activity {
                     SetAliasAndTagUtil adt = new SetAliasAndTagUtil(MyUserInfoActivity.this);
                     adt.setAlias("null");
                     Toast.makeText(getApplicationContext(), "登出成功", Toast.LENGTH_SHORT).show();
-                    intent.setClass(MyUserInfoActivity.this, RegisterAndLoginActivity.class);
+                    intent.setClass(MyUserInfoActivity.this, LoginActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(MyUserInfoActivity.this, "登出失败", Toast.LENGTH_SHORT).show();

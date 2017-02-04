@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.wsns.lor.Activity.LoginActivity;
 import com.wsns.lor.R;
 
-import im.sdk.debug.RegisterAndLoginActivity;
 import im.sdk.debug.activity.TypeActivity;
 
 /**
@@ -39,7 +39,7 @@ public class ShowLogoutReasonActivity extends Activity{
 
     @Override
     protected void onPause() {
-        Intent intent = new Intent(ShowLogoutReasonActivity.this, RegisterAndLoginActivity.class);
+        Intent intent = new Intent(ShowLogoutReasonActivity.this, LoginActivity.class);
         startActivity(intent);
         super.onDestroy();
     }

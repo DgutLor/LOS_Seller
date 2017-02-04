@@ -6,11 +6,10 @@ import com.wsns.lor.entity.Goods;
 import com.wsns.lor.entity.GoodsHttpResult;
 import com.wsns.lor.entity.Order;
 import com.wsns.lor.entity.OrderHttpResult;
-import com.wsns.lor.entity.RegisterResult;
 import com.wsns.lor.entity.Seller;
 import com.wsns.lor.entity.SellerHttpResult;
 import com.wsns.lor.entity.TradeHttpResult;
-import com.wsns.lor.entity.UserHttpResult;
+import com.wsns.lor.entity.DataAndCodeBean;
 import com.wsns.lor.entity.User;
 
 import java.util.List;
@@ -24,16 +23,16 @@ import rx.Observable;
  */
 public interface LORService {
 
-    @POST("LoginServlet")
-    Observable<UserHttpResult<List<User>>> getUserDate(@Query("hxid") String username, @Query("password") String password);
+    @POST("api/user/login")
+    Observable<DataAndCodeBean<User>> getUserDate(@Query("account") String username, @Query("passwordHash") String password);
 
     @POST("SellerDateServlet")
     Observable<SellerHttpResult<List<Seller>>>
     getSellerListDate(@Query("operation") String operation, @Query("NowLocation") String NowLocation,
                       @Query("start") String start, @Query("num") String num);
 
-    @POST("RegisterServlet")
-    Observable<RegisterResult<String>> getRegisterResult(@Query("username") String username, @Query("password") String password);
+    @POST("api/user/register")
+    Observable<DataAndCodeBean<User>> getRegisterResult(@Query("account") String account, @Query("passwordHash") String passwordHash);
 
     @POST("OrderDateServlet")
     Observable<TradeHttpResult<String>> getTradeResult(

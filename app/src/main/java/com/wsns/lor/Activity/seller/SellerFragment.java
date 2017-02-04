@@ -1,8 +1,11 @@
 package com.wsns.lor.Activity.seller;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -24,36 +28,48 @@ import com.amap.api.services.cloud.CloudResult;
 import com.amap.api.services.cloud.CloudSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
-import com.brooks.loadmorerecyclerview.LoadMoreRecyclerView;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wsns.lor.Adapter.MyItemRecyclerViewAdapter;
+import com.wsns.lor.Adapter.SellersListAdapter;
 import com.wsns.lor.App.OnlineUserInfo;
 import com.wsns.lor.R;
+import com.wsns.lor.entity.Goods;
 import com.wsns.lor.entity.Seller;
 import com.wsns.lor.http.HttpMethods;
 import com.wsns.lor.http.subscribers.ProgressSubscriber;
 import com.wsns.lor.http.subscribers.SubscriberOnNextListener;
+import com.wsns.lor.utils.Densityutils;
 import com.wsns.lor.utils.ToastUtil;
+import com.wsns.lor.view.layout.VRefreshLayout;
+import com.wsns.lor.view.widgets.JDHeaderView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * 商家列表页Fragment
  */
-public class SellerFragment extends Fragment implements AMapLocationListener, CloudSearch.OnCloudSearchListener ,MyItemClickListener{
+public class SellerFragment extends Fragment implements AMapLocationListener, CloudSearch.OnCloudSearchListener, MyItemClickListener {
 
+    int NOT_MORE_PAGE = -1;
 
     public int START = 0;
     public int PAGESIZE = 10;//列表一次刷新数目
 
-    public int PAGENUM = 0;//查询第几页的结果，从0开始
+    public int page = 0;//查询第几页的结果，从0开始
     public int PageCount;//搜索结果的总页数
 
-    public List<Seller> moreSeller = new ArrayList<>();
+    public List<Seller> sellers = new ArrayList<>();
     private View mView;
-    private LoadMoreRecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MyItemRecyclerViewAdapter myItemRecyclerViewAdapter;
     private SubscriberOnNextListener getUserDataOnNext;
@@ -61,14 +77,21 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
     private TextView addressText;
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
-
     private String mTableID = "580706aeafdf523f4f0ff73b";
     private String mKeyWord = ""; // 搜索关键字
     private int radiusInMeters = 5000;// 搜索半径 米
-
+    private View mJDHeaderView;
     private CloudSearch.Query mQuery;
     private CloudSearch mCloudSearch;
     private List<CloudItem> mCloudItems;
+    private VRefreshLayout mRefreshLayout;
+    Activity activity;
+    View btnLoadMore;
+    TextView textLoadMore;
+    boolean firstBuilt = true;
+    ListView mListView;
+    SellersListAdapter adapter;
+
 
     public SellerFragment() {
 
@@ -83,12 +106,52 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_seller, container, false);
+        activity = getActivity();
+        adapter = new SellersListAdapter(activity, sellers);
         mCloudSearch = new CloudSearch(getActivity());
         mCloudSearch.setOnCloudSearchListener(this);
+        mListView = (ListView) mView.findViewById(R.id.listView);
+        btnLoadMore = inflater.inflate(R.layout.list_foot, null);
+        textLoadMore = (TextView) btnLoadMore.findViewById(R.id.loadmore);
+        mListView.addFooterView(btnLoadMore);
+        mListView.setAdapter(adapter);
+        btnLoadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (hasMore() ){
+                    PageLoadData();
+                }
+            }
+        });
+        initHeaderView();
         initLoacionSetting();
         initSellerListView();
 
         return mView;
+    }
+
+    private void initHeaderView() {
+        mRefreshLayout = (VRefreshLayout) mView.findViewById(R.id.refresh_layout);
+        if (mRefreshLayout != null) {
+            mJDHeaderView = new JDHeaderView(activity);
+            mJDHeaderView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp2px(64)));
+            mRefreshLayout.setBackgroundColor(Color.DKGRAY);
+            mRefreshLayout.setAutoRefreshDuration(400);
+            mRefreshLayout.setRatioOfHeaderHeightToReach(1.5f);
+            mRefreshLayout.addOnRefreshListener(new VRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    page = 0;
+                    sellers.clear();
+                    PageLoadData();
+                }
+            });
+        }
+
+        mRefreshLayout.setHeaderView(mJDHeaderView);
+        mRefreshLayout.setBackgroundColor(Color.WHITE);
+
+
     }
 
     //#################1.初始化商家列表#####################
@@ -98,7 +161,7 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
         getUserDataOnNext = new SubscriberOnNextListener<List<Seller>>() {
             @Override
             public void onNext(List<Seller> sellers) {
-//                moreSeller = sellers;
+//                sellers = sellers;
 //
 //                //#################4.得到数据后初始化列表#####################
 //                if (recyclerView == null) {
@@ -107,12 +170,12 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
 //                    //加载swipeRefreshLayout
 //                    loadRefreshLayout();
 //                } else {  //#################5.上拉刷新数据#####################
-//                    myItemRecyclerViewAdapter.addDatas(moreSeller);
+//                    myItemRecyclerViewAdapter.addDatas(sellers);
 //                    recyclerView.notifyMoreFinish(hasMore());
 //                }
 //                //#################6.下拉刷新数据#####################
 //                if (swipeRefreshLayout != null && START == 0) {
-//                    myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(moreSeller);
+//                    myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(sellers);
 //                    recyclerView.setAdapter(myItemRecyclerViewAdapter);
 //                    //声明使用图片动画加载
 //                    recyclerView.setUsePicture(true);
@@ -127,46 +190,6 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
 
     }
 
-    private void loadRecyclerView() {
-        recyclerView = (LoadMoreRecyclerView) mView.findViewById(R.id.recyclerview);
-        recyclerView.setHasFixedSize(true);
-        myItemRecyclerViewAdapter = new MyItemRecyclerViewAdapter(moreSeller,getActivity());
-        recyclerView.setAdapter(myItemRecyclerViewAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        //声明使用图片动画加载
-        recyclerView.setUsePicture(true);
-        recyclerView.setAutoLoadMoreEnable(hasMore());
-        recyclerView.setLoadMoreListener(new LoadMoreRecyclerView.LoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                recyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-//                        START += moreSeller.size();
-                        PageLoadData();
-
-                    }
-                }, 1000);
-            }
-        });
-        myItemRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    private void loadRefreshLayout() {
-        swipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.refresh_layout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.refresh_color1, R.color.refresh_color2,
-                R.color.refresh_color3, R.color.refresh_color4);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-//                START = 0;
-                PAGENUM = 0;
-                PageLoadData();
-            }
-        });
-    }
 
     //################网络请求方法#######################
     public void PageLoadData() {
@@ -181,7 +204,7 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
         try {
             mQuery = new CloudSearch.Query(mTableID, mKeyWord, bound);
             mQuery.setPageSize(PAGESIZE);
-            mQuery.setPageNum(PAGENUM++);
+            mQuery.setPageNum(page++);
 
             CloudSearch.Sortingrules sorting = new CloudSearch.Sortingrules(CloudSearch.Sortingrules.DISTANCE);
             mQuery.setSortingrules(sorting);
@@ -194,8 +217,8 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
 
     //################判断是否还有数据#######################
     public boolean hasMore() {
-        return  PAGENUM!=PageCount;
-//        return moreSeller.size()%PAGESIZE== 0;
+        return page != PageCount;
+//        return sellers.size()%PAGESIZE== 0;
     }
 
     public void initLoacionSetting() {
@@ -216,8 +239,8 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
             public void afterTextChanged(Editable s) {
                 //#################3.进行第一个网络请求#####################
                 if (!s.toString().equals("") && OnlineUserInfo.latLonPoint != null) {
-                    System.out.println("位置变更："+s);
-                    PAGENUM=0;
+                    System.out.println("位置变更：" + s);
+                    page = 0;
                     PageLoadData();
                 }
             }
@@ -246,21 +269,103 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
             mlocationClient.startLocation();
         }
     }
+//
+//    private void refreshSellerList() {
+//        btnLoadMore.setEnabled(false);
+//        textLoadMore.setText("加载中");
+//
+//
+//        Server.getSharedClient().newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//
+//                activity.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mRefreshLayout.refreshComplete();
+//                        textLoadMore.setEnabled(true);
+//                        textLoadMore.setText("网络异常");
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, final Response response) throws IOException {
+//                final String result = response.body().string();
+//                activity.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        mRefreshLayout.refreshComplete();
+//
+//                        btnLoadMore.setEnabled(true);
+//                        textLoadMore.setText("数据解析中");
+//                        try {
+//
+//                            ObjectMapper mapper = new ObjectMapper();
+//                            goodsPage = mapper.readValue(result,
+//                                    new TypeReference<Page<Goods>>() {
+//                                    });
+//
+//
+//                            if (goodsPage.getTotalPages() != page) {
+//                                textLoadMore.setText("加载更多");
+//                                mGoods.addAll(goodsPage.getContent());
+//                                adpter.notifyDataSetChanged();
+//                            } else {
+//                                page = NOT_MORE_PAGE;
+//                                textLoadMore.setText("没有新内容");
+//                                mGoods.addAll(goodsPage.getContent());
+//                                adpter.notifyDataSetChanged();
+//                            }
+//
+//
+//                        } catch (IOException e) {
+//                            textLoadMore.setText("数据解析失败" + e.getLocalizedMessage());
+//                        }
+//                    }
+//                });
+//
+//            }
+//        });
+//
+//
+//    }
 
+    private Handler scaleHandler = new Handler();
+    private Runnable scaleRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+
+            if (firstBuilt) {
+                mRefreshLayout.autoRefresh();
+                firstBuilt = false;
+            }
+
+        }
+    };
 
     @Override
     public void onResume() {
-        if (!addressText.getText().toString().equals(OnlineUserInfo.myInfo.getAddress())&&OnlineUserInfo.myInfo.getAddress()!=null&&!OnlineUserInfo.myInfo.getAddress().equals(""))
-            addressText.setText(OnlineUserInfo.myInfo.getAddress());
         super.onResume();
+        activity.getWindow().getDecorView().post(new Runnable() {
+
+            @Override
+            public void run() {
+                scaleHandler.post(scaleRunnable);
+            }
+        });
+        addressText.setText(OnlineUserInfo.myInfo.getAddress());
     }
+
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null) {
             if (aMapLocation != null
                     && aMapLocation.getErrorCode() == 0) {
-                System.out.println(aMapLocation.getAddress()+"  onLocationChanged");
+                System.out.println(aMapLocation.getAddress() + "  onLocationChanged");
                 OnlineUserInfo.latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude());
                 addressText.setText(aMapLocation.getPoiName());
                 mlocationClient.onDestroy();
@@ -281,7 +386,7 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
                     PageCount = result.getPageCount();
                     mCloudItems = result.getClouds();
                     if (mCloudItems != null && mCloudItems.size() > 0) {
-                        moreSeller=new ArrayList<>();
+                        sellers = new ArrayList<>();
                         for (CloudItem item : mCloudItems) {
 //                            Log.d(TAG, "_id " + item.getID());
 //                            Log.d(TAG, "_location "
@@ -301,7 +406,7 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
 //                            }
 
                             Seller seller = new Seller();
-                            seller.setID( item.getID());
+                            seller.setID(item.getID());
                             seller.setNick(item.getTitle());
                             seller.setDistance(item.getDistance() + "m");
                             seller.setStar(item.getCustomfield().get("star"));
@@ -309,32 +414,11 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
                             seller.setEvents(item.getCustomfield().get("events"));
                             seller.setMonth(item.getCustomfield().get("month"));
                             seller.setAvatar(item.getCloudImage().get(0).getPreurl());
-                            System.out.println(item.getCloudImage().get(0).getPreurl()+"a"+item.getCloudImage().get(0).getUrl());
-                            moreSeller.add(seller);
-                        }
-                        //#################4.得到数据后初始化列表#####################
-                        if (recyclerView == null) {
-                            //加载RecyclerView
-                            loadRecyclerView();
-                            //加载swipeRefreshLayout
-                            loadRefreshLayout();
-                        } else {  //#################5.上拉刷新数据#####################
-                            myItemRecyclerViewAdapter.addDatas(moreSeller);
-                            recyclerView.notifyMoreFinish(hasMore());
-                        }
-                        //#################6.下拉刷新数据#####################
-                        if (swipeRefreshLayout != null && PAGENUM == 1) {
-                            myItemRecyclerViewAdapter.setData(moreSeller);
-
-                            //声明使用图片动画加载
-                            recyclerView.setUsePicture(true);
-                            recyclerView.setAutoLoadMoreEnable(hasMore());
-                            recyclerView.setLoadingMore(false);
-                            myItemRecyclerViewAdapter.setOnItemClickListener(this);
-                            myItemRecyclerViewAdapter.notifyDataSetChanged();
-                            swipeRefreshLayout.setRefreshing(false);
+                            System.out.println(item.getCloudImage().get(0).getPreurl() + "a" + item.getCloudImage().get(0).getUrl());
+                            sellers.add(seller);
                         }
 
+                        adapter.notifyDataSetChanged();
                     } else {
                         ToastUtil.show(getActivity(), "对不起，没有搜索到相关数据！");
                     }
@@ -347,17 +431,17 @@ public class SellerFragment extends Fragment implements AMapLocationListener, Cl
     public void onCloudItemDetailSearched(CloudItemDetail cloudItemDetail, int i) {
 
 
-
-
-
-
     }
 
     @Override
     public void onItemClick(View view, int postion) {
-        Seller seller=myItemRecyclerViewAdapter.getDataItem(postion);
-        Intent intent=new Intent(getActivity(),SellerDetailsActivity.class);
-        intent.putExtra("ID",seller.getID());
+        Seller seller = myItemRecyclerViewAdapter.getDataItem(postion);
+        Intent intent = new Intent(getActivity(), SellerDetailsActivity.class);
+        intent.putExtra("ID", seller.getID());
         startActivity(intent);
+    }
+
+    protected int dp2px(float dp) {
+        return Densityutils.dp2px(activity, dp);
     }
 }

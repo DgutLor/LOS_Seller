@@ -42,7 +42,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="c9ee788a979debe87eed4ba0209babaf" />
+            android:value="c800877bbd4af6bd73fa02710bc037f4" />
 
         <activity
             android:name=".Activity.MainActivity"
@@ -70,23 +70,20 @@
                 <category android:name="jpush.testCategory" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Activity.more.MyUserInfoActivity" />
         <activity android:name=".Activity.seller.LocationActivity" />
         <activity android:name=".Activity.seller.SellerDetailsActivity" />
-        <activity
-            android:name=".Activity.order.ProgressActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
-
-
-
-
-
-
-
-
-
+        <activity android:name=".Activity.order.ProgressActivity" />
+        <activity android:name=".Activity.RegistersActivity" />
+        <activity android:name=".Activity.ForgetPasswordActivity" />
+        <activity android:name=".Activity.RegisterSuccessActivity" />
 
 
         <!-- Rich push 核心功能 since 2.0.6-->
@@ -100,7 +97,7 @@
             android:name="cn.jpush.android.ui.PushActivity"
             android:configChanges="orientation|keyboardHidden"
             android:exported="false"
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar">
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
@@ -191,32 +188,16 @@
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
 
 
-        <activity android:name="im.sdk.debug.RegisterAndLoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="im.sdk.debug.activity.setting.RegisterActivity" />
         <activity android:name="im.sdk.debug.activity.setting.SettingMainActivity" />
         <activity android:name="im.sdk.debug.activity.TypeActivity" />
         <activity android:name="im.sdk.debug.activity.setting.InfoActivity" />
         <activity android:name="im.sdk.debug.activity.setting.AssertEqualsActivity" />
-        <activity android:name="im.sdk.debug.activity.setting.GetUserInfoActivity" />
         <activity android:name="im.sdk.debug.activity.setting.UpdatePassword" />
         <activity android:name="im.sdk.debug.activity.setting.UpdateUserInfoActivity" />
         <activity android:name="im.sdk.debug.activity.createmessage.CreateMessageActivity" />
         <activity android:name="im.sdk.debug.activity.createmessage.CreateSigTextMessageActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.GroupInfoActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.CreateGroupActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.GetGroupInfoActivity" />
         <activity android:name="im.sdk.debug.activity.imagecontent.ImageContentActivity" />
         <activity android:name="im.sdk.debug.activity.conversation.ConversationActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.AddRemoveGroupMemberActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.UpdateGroupInfoActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.ExitGroupActivity" />
-        <activity android:name="im.sdk.debug.activity.groupinfo.GetLocalGroupMembersActivity" />
         <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupTextMsgActivity" />
         <activity android:name="im.sdk.debug.activity.createmessage.CreateSigCustomMsgActivity" />
         <activity android:name="im.sdk.debug.activity.createmessage.CreateSigImageMessageActivity" />
@@ -228,7 +209,6 @@
         <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupVoiceMsgActivity" />
         <activity android:name="im.sdk.debug.activity.notify.NotifyTypeActivity" />
         <activity android:name="im.sdk.debug.activity.setting.GetBlackListActivity" />
-        <activity android:name="im.sdk.debug.activity.setting.AddRemoveBlackListActivity" />
         <activity android:name="im.sdk.debug.activity.setting.UpdateUserAvatar" />
         <activity android:name="im.sdk.debug.activity.notify.ShowGroupNotificationActivity" />
         <activity android:name="im.sdk.debug.activity.imagecontent.CreateImageContentAsyncFile" />

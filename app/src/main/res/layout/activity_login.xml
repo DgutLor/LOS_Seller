@@ -1,42 +1,184 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/ed_login_username"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="输入登录账号"
-        />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/tv_face"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="#fff"
+            android:elevation="3dp"
+
+            android:src="@drawable/unknow_avatar" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_face">
+
+            <LinearLayout
+                android:id="@+id/input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <com.wsns.lor.view.widgets.DropEditText
+                    android:id="@+id/drop_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="请输入账号"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="10dp" />
+
+                <EditText
+                    android:id="@+id/et_pasword"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/drop_edit_text"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:hint="请输入密码"
+                    android:paddingLeft="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_check"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/input"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_remember_password"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="记住密码" />
+
+                <CheckBox
+                    android:id="@+id/cb_auto_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="自动登录" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/username_sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_check"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_login"
+                android:focusable="true"
+                android:text="登录"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/password_recover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/username_sign_in_button"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:text="忘记密码?"
+                android:textColor="#30b7ff" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/iv_3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="185dp"
+            android:layout_marginRight="40dp"
+            android:src="@drawable/intro1_item_3"
+       />
+
+        <ImageView
+            android:id="@+id/iv_4"
+            android:layout_width="fill_parent"
+            android:layout_height="128dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="29dp"
+            android:background="@drawable/intro1_item_4"
+          />
+
+        <ImageView
+            android:id="@+id/iv_5"
+            android:layout_width="260dp"
+            android:layout_height="18dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/intro1_item_5"
+            />
+
+        <ImageView
+            android:id="@+id/iv_6"
+            android:layout_width="24dp"
+            android:layout_height="116dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="35dp"
+            android:layout_marginLeft="46dp"
+            android:src="@drawable/intro1_item_6"
+          />
+
+        <ImageView
+            android:id="@+id/iv_7"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="23dp"
+            android:layout_marginLeft="76dp"
+            android:src="@drawable/intro1_item_7"
+          />
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/iv_5"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_btn_rectangle_blue"
+            android:gravity="center"
+            android:text="手机注册"
+            android:textColor="#000"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
 
-    <EditText
-        android:id="@+id/ed_login_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="输入登录密码"
-        />
-
-    <Button
-        android:id="@+id/bt_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="登录"
-        />
-
-    <Button
-        android:id="@+id/bt_goto_regester"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="注册"
-        />
-    <CheckBox
-        android:id="@+id/cb_is_test"
-        android:text="是否设置测试环境"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

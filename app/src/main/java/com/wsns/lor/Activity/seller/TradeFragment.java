@@ -17,12 +17,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.view.FlowTagLayout;
-import com.view.OnTagSelectListener;
 
 import com.wsns.lor.Activity.order.ProgressActivity;
 import com.wsns.lor.Adapter.TypeTagAdapter;
 import com.wsns.lor.App.OnlineUserInfo;
+import com.wsns.lor.Listener.OnTagSelectListener;
 import com.wsns.lor.R;
 import com.wsns.lor.entity.Goods;
 import com.wsns.lor.entity.Seller;
@@ -30,13 +29,13 @@ import com.wsns.lor.http.HttpMethods;
 import com.wsns.lor.http.subscribers.ProgressSubscriber;
 import com.wsns.lor.http.subscribers.SubscriberOnNextListener;
 import com.wsns.lor.utils.StringDivide;
+import com.wsns.lor.view.layout.FlowTagLayout;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.jpush.im.android.api.model.UserInfo;
-import im.sdk.debug.activity.setting.RegisterActivity;
 
 
 public class TradeFragment extends Fragment {

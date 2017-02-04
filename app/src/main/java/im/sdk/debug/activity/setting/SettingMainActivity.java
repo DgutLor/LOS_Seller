@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wsns.lor.Activity.LoginActivity;
 import com.wsns.lor.utils.SetAliasAndTagUtil;
 import com.wsns.lor.R;
 
@@ -19,7 +20,6 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.IntegerCallback;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
-import im.sdk.debug.RegisterAndLoginActivity;
 import im.sdk.debug.activity.notify.NotifyTypeActivity;
 
 /**
@@ -96,7 +96,7 @@ public class SettingMainActivity extends Activity implements View.OnClickListene
                     SetAliasAndTagUtil adt=new SetAliasAndTagUtil(SettingMainActivity.this);
                     adt.setAlias("null");
                     Toast.makeText(getApplicationContext(), "登出成功", Toast.LENGTH_SHORT).show();
-                    intent.setClass(SettingMainActivity.this, RegisterAndLoginActivity.class);
+                    intent.setClass(SettingMainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(SettingMainActivity.this, "登出失败", Toast.LENGTH_SHORT).show();
@@ -108,11 +108,7 @@ public class SettingMainActivity extends Activity implements View.OnClickListene
                 intent.setClass(SettingMainActivity.this, AssertEqualsActivity.class);
                 startActivity(intent);
                 break;
-/**#################    获取指定用户信息    #################*/
-            case R.id.bt_get_user_info:
-                intent.setClass(SettingMainActivity.this, GetUserInfoActivity.class);
-                startActivity(intent);
-                break;
+
 /**#################    更新密码    #################*/
             case R.id.bt_update_user_password:
                 intent.setClass(SettingMainActivity.this, UpdatePassword.class);
@@ -138,11 +134,7 @@ public class SettingMainActivity extends Activity implements View.OnClickListene
                 intent.setClass(SettingMainActivity.this, GetBlackListActivity.class);
                 startActivity(intent);
                 break;
-/**#################    加入或移除黑名单    #################*/
-            case R.id.bt_add_or_remove_users_to_blacklist:
-                intent.setClass(SettingMainActivity.this, AddRemoveBlackListActivity.class);
-                startActivity(intent);
-                break;
+
 /**#################    设置通知类型    #################*/
             case R.id.bt_set_notification_mode:
                 intent.setClass(SettingMainActivity.this, NotifyTypeActivity.class);

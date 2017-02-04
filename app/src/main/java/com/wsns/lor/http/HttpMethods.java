@@ -1,20 +1,21 @@
 package com.wsns.lor.http;
 
 
+import com.google.gson.Gson;
 import com.wsns.lor.entity.Goods;
 import com.wsns.lor.entity.GoodsHttpResult;
 import com.wsns.lor.entity.Order;
 import com.wsns.lor.entity.OrderHttpResult;
-import com.wsns.lor.entity.RegisterResult;
 import com.wsns.lor.entity.Seller;
 import com.wsns.lor.entity.SellerHttpResult;
 import com.wsns.lor.entity.TradeHttpResult;
-import com.wsns.lor.entity.UserHttpResult;
-import com.wsns.lor.entity.User;
 
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -31,20 +32,26 @@ import rx.schedulers.Schedulers;
 public class HttpMethods {
 
 //    public static final String BASE_URL = "http://192.168.191.1:8080/LORServer/";
+//    public static final String BASE_URL = "http://172.27.151.152:8080/LORServer/";
 //    public static final String BASE_URL = "http://192.168.43.135:8080/LORServer/";
 //    public static final String BASE_URL = "http://115.28.58.198/";
-    public static final String BASE_URL = "http://119.29.52.160/LORServer/";
+//    public static final String BASE_URL = "http://119.29.52.160/LORServer/";
+    public static final String BASE_URL = "http://192.168.1.101:8080/Lor/";
     private static final int DEFAULT_TIMEOUT = 5;
 
-    private Retrofit retrofit;
-    private LORService lorService;
+    private  static Retrofit retrofit;
+    public   static LORService lorService;
+    private static OkHttpClient client;
 
-    //构造方法私有
-    private HttpMethods() {
+    static {
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-
+        client = new OkHttpClient.Builder()
+                .cookieJar(new JavaNetCookieJar(cookieManager))
+                .build();
         retrofit = new Retrofit.Builder()
                 .client(builder.build())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -52,6 +59,14 @@ public class HttpMethods {
                 .baseUrl(BASE_URL)
                 .build();
 
+    }
+
+    public static OkHttpClient getSharedClient(){
+        return client;
+    }
+
+    //构造方法私有
+    private HttpMethods() {
         lorService = retrofit.create(LORService.class);
     }
 
@@ -62,38 +77,12 @@ public class HttpMethods {
 
     //获取单例
     public static HttpMethods getInstance() {
+        System.out.println("访问了:"+BASE_URL);
         return SingletonHolder.INSTANCE;
     }
 
-    /**
-     * 用于获取登录用户的数据
-     *
-     * @param subscriber 由调用者传过来的观察者对象
-     * @param username   用户名
-     * @param password   密码
-     */
-    public void getUserData(Subscriber<List<User>> subscriber, String username, String password) {
 
-        Observable observable = lorService.getUserDate(username, password)
-                .map(new UserHttpResultFunc<List<User>>());
 
-        toSubscribe(observable, subscriber);
-    }
-
-    /**
-     * 用于获取注册的结果
-     *
-     * @param subscriber 由调用者传过来的观察者对象
-     * @param username   用户名
-     * @param password   密码
-     */
-    public void getRegisterResult(Subscriber<String> subscriber, String username, String password) {
-
-        Observable observable = lorService.getRegisterResult(username, password)
-                .map(new RegisterHttpResultFunc());
-
-        toSubscribe(observable, subscriber);
-    }
 
     /**
      * 用于获取商家列表的数据
@@ -171,30 +160,14 @@ public class HttpMethods {
 
 
 
-    private <T> void toSubscribe(Observable<T> o, Subscriber<T> s) {
+    public static <T> void toSubscribe(Observable<T> o, Subscriber<T> s) {
         o.subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s);
     }
 
-    /**
-     * 用来统一处理Http的resultCode,并将HttpResult的Data部分剥离出来返回给subscriber
-     *
-     * @param <T> Subscriber真正需要的数据类型，也就是Data部分的数据类型
-     */
-    private class UserHttpResultFunc<T> implements Func1<UserHttpResult<T>, T> {
 
-        @Override
-        public T call(UserHttpResult<T> httpResult) {
-
-            System.out.println(httpResult.getUser());
-            if (httpResult.getCode().equals("2")) {
-                throw new ApiException(100);
-            }
-            return httpResult.getUser();
-        }
-    }
 
     private class SellerHttpResultFunc<T> implements Func1<SellerHttpResult<T>, T> {
 
@@ -209,16 +182,7 @@ public class HttpMethods {
         }
     }
 
-    private class RegisterHttpResultFunc<T> implements Func1<RegisterResult<T>, T> {
 
-        @Override
-        public T call(RegisterResult<T> httpResult) {
-
-            System.out.println(httpResult.toString());
-
-            return httpResult.getCode();
-        }
-    }
     private class TradeHttpResultFunc<T> implements Func1<TradeHttpResult<T>, T> {
 
         @Override

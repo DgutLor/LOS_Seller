@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.view.UnderLineLinearLayout;
 import com.wsns.lor.R;
 import com.wsns.lor.entity.Order;
+import com.wsns.lor.view.layout.UnderLineLinearLayout;
 
 
 public class ProgressFragment extends Fragment {
