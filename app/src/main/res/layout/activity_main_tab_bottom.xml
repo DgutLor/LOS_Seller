@@ -87,27 +87,5 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/btn_more"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/iv_more"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/main_bottom_more" />
-
-            <TextView
-                android:id="@+id/tv_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab4"
-                android:textColor="@color/main_bottom_textcolor_normal"
-                android:textSize="13sp" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
